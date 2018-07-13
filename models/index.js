@@ -5,4 +5,4 @@ mongoose.connect('mongodb://localhost/discord_clone', {
   keepAlive: true,
 });
 
-mongose.exports.User = require('./user');
+module.exports.User = require('./user');
