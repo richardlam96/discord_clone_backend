@@ -4,8 +4,19 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async function(req, res, next) {
 	try {
+    // Simple password length check.
+    if (req.body.password.length < 6) {
+      next({
+        status: 400,
+        message: 'Password has to be at least 6 chars',
+      });
+    }
+   
+    // Create new user.
 		let newUser = await db.User.create(req.body);
 		let { username, password } = newUser;
+
+    // Assign token to new user with available information.
 		let token = jwt.sign({
 			username,
 			password,
@@ -28,7 +39,7 @@ exports.register = async function(req, res, next) {
 
 exports.signin = async function(req, res, next) {
 	try {
-		// Try to find user in database by username.
+		// Find user in database by username.
 		let user = await db.User.findOne({
 			username: req.body.username,
 		});
