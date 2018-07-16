@@ -4,15 +4,19 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { errorHandler } = require('./handlers/error');
+const { loginRequired } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
+const serverRoutes = require('./routes/server');
 
 
 app.use(cors());
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: true}));
 
-
+// Routes.
 app.use('/api/auth', authRoutes);
+app.use('/api/servers', loginRequired, serverRoutes);
+
+// Default error and error handler.
 app.use(function(req, res, next) {
 	let err = new Error('Not found.');
 	err.status = 404;

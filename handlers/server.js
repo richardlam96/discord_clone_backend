@@ -73,7 +73,7 @@ exports.updateServer = async function(req, res, next) {
   try {
     // Find the Server that needs to be updated.
     let server = await db.Server.findOneAndUpdate({
-      _id: req.body.serverId,
+      _id: req.params.serverId,
       owner: req.body.ownerId,
     }, {
       name: req.body.name,
@@ -99,7 +99,7 @@ exports.deleteServer = async function(req, res, next) {
   try {
     // Find and delete target Server.
     let removedServer = await db.Server.findOneAndDelete({
-      _id: req.body.serverId,
+      _id: req.params.serverId,
     });
 
     if (!removedServer) {
