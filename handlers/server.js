@@ -8,29 +8,34 @@ const db = require('../models');
 // Create a Server for a given User.
 exports.createServer = async function(req, res, next) {
   try {
+    // Find owner and add new Server's id to owner's server array.
+    let serverOwner = await db.User.findOne({
+      _id: req.body.ownerId,
+    });
+    
+    if (!serverOwner) {
+      throw new Error('Could not find user.');
+    }
+
     // Create new Server.
     let newServer = await db.Server.create({
       name: req.body.name,
-      owner: req.body.ownerId,
+      owner: serverOwner._id,
     });
 
     if (!newServer) {
       throw new Error('Could not create server.');
     }
 
-    // Find owner and add new Server's id to owner's server array.
-    let owner = await db.User.findOne({
-      _id: newServer.owner,
-    });
 
     // Add Owner to Server's member list and Server to Owner's owned Servers.
-    newServer.members.push(owner._id);
-    newServer.save();
-    owner.servers.push(newServer._id);
-    owner.save();
+    newServer.members.push(serverOwner._id);
+    serverOwner.servers.push(newServer._id);
+    await newServer.save().then(serverOwner.save());
 
+    let { _id, name, owner, channels, members } = newServer;
     return res.status(200).json({
-      ...newServer,
+      _id, name, owner, channels, members,
     });
   } catch(error) {
     next({
@@ -49,7 +54,8 @@ exports.indexServers = async function(req, res, next) {
       .populate('channels');
 
     if (servers.length === 0) {
-      throw new Error('User does not have any servers.');
+      // Should this be sent as an error?
+      throw new Error('User does not have any servers.' + req.body.ownerId);
     }
 
     let serversById = servers.reduce((acc, server) => {
@@ -84,7 +90,7 @@ exports.updateServer = async function(req, res, next) {
     }
 
     return res.status(200).json({
-      ...server,
+      ...server._doc,
     });
   } catch(error) {
     next({
@@ -107,7 +113,7 @@ exports.deleteServer = async function(req, res, next) {
     }
 
     return res.status(200).json({
-      ...removedServer,
+      ...removedServer._doc,
     });
   } catch(error) {
     next({

@@ -6,3 +6,5 @@ mongoose.connect('mongodb://localhost/discord_clone', {
 });
 
 module.exports.User = require('./user');
+module.exports.Server = require('./server');
+module.exports.Channel = require('./channel');
