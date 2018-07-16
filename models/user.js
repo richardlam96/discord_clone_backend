@@ -13,6 +13,10 @@ var userSchema = new mongoose.Schema({
     required: true,
 		unique: true,
   },
+  servers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Server',
+  }],
 });
 
 userSchema.pre('save', async function(next) {
