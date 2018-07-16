@@ -14,7 +14,7 @@ exports.register = async function(req, res, next) {
    
     // Create new user.
 		let newUser = await db.User.create(req.body);
-		let { username, password } = newUser;
+		let { id, username, password } = newUser;
 
     // Assign token to new user with available information.
 		let token = jwt.sign({
@@ -22,6 +22,7 @@ exports.register = async function(req, res, next) {
 			password,
 		}, process.env.SECRET_KEY);
 		return res.status(200).json({
+			id,
 			username,
 			password,
 			token,

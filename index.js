@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 // Routes.
 app.use('/api/auth', authRoutes);
-app.use('/api/servers', loginRequired, serverRoutes);
+app.use('/api/:ownerId/servers', loginRequired, serverRoutes);
 
 // Default error and error handler.
 app.use(function(req, res, next) {
@@ -22,6 +22,7 @@ app.use(function(req, res, next) {
 	err.status = 404;
 	next(err);
 });
+
 app.use(errorHandler);
 
 app.listen(process.env.PORT || 3000, process.env.IP, function() {
