@@ -13,18 +13,18 @@ exports.createServer = async function(req, res, next) {
 		}
 
     // Find owner and add new Server's id to owner's server array.
-    let owner = await db.User.findOne({
-      _id: req.params.ownerId,
+    let serverOwner = await db.User.findOne({
+      _id: req.body.ownerId,
     });
-
-		if (!owner) {
-			throw new Error('Could not find user. ' + req.params.ownerId);
-		}
+    
+    if (!serverOwner) {
+      throw new Error('Could not find user.');
+    }
 
     // Create new Server.
     let newServer = await db.Server.create({
       name: req.body.name,
-      owner: owner._id,
+      owner: serverOwner._id,
     });
 
     if (!newServer) {
@@ -37,8 +37,9 @@ exports.createServer = async function(req, res, next) {
     await newServer.save();
 		await owner.save();
 
+		let { _id, name, owner, channels, members } = newServer;
     return res.status(200).json({
-      ...newServer,
+      _id, name, owner, channels, members,
     });
   } catch(error) {
     next({
@@ -91,7 +92,7 @@ exports.updateServer = async function(req, res, next) {
     }
 
     return res.status(200).json({
-      ...server,
+      ...server._doc,
     });
   } catch(error) {
     next({
@@ -114,7 +115,7 @@ exports.deleteServer = async function(req, res, next) {
     }
 
     return res.status(200).json({
-      ...removedServer,
+      ...removedServer._doc,
     });
   } catch(error) {
     next({
