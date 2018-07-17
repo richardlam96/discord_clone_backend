@@ -5,7 +5,6 @@ var serverSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

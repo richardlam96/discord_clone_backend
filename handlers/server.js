@@ -8,26 +8,34 @@ const db = require('../models');
 // Create a Server for a given User.
 exports.createServer = async function(req, res, next) {
   try {
+		if (!req.params.ownerId) {
+			throw new Error('No ownerId parameter');
+		}
+
+    // Find owner and add new Server's id to owner's server array.
+    let owner = await db.User.findOne({
+      _id: req.params.ownerId,
+    });
+
+		if (!owner) {
+			throw new Error('Could not find user. ' + req.params.ownerId);
+		}
+
     // Create new Server.
     let newServer = await db.Server.create({
       name: req.body.name,
-      owner: req.body.ownerId,
+      owner: owner._id,
     });
 
     if (!newServer) {
       throw new Error('Could not create server.');
     }
 
-    // Find owner and add new Server's id to owner's server array.
-    let owner = await db.User.findOne({
-      _id: newServer.owner,
-    });
-
     // Add Owner to Server's member list and Server to Owner's owned Servers.
     newServer.members.push(owner._id);
-    newServer.save();
     owner.servers.push(newServer._id);
-    owner.save();
+    await newServer.save();
+		await owner.save();
 
     return res.status(200).json({
       ...newServer,
@@ -48,13 +56,16 @@ exports.indexServers = async function(req, res, next) {
       .find({ owner: req.params.ownerId })
       .populate('channels');
 
+		let serverIds = [];
     let serversById = servers.reduce((acc, server) => {
       acc[server._id] = server;
+			serverIds.push(server._id);
       return acc;
     }, {});
 
     return res.status(200).json({
-      ...serversById,
+      serversById,
+			serverIds,
     });
   } catch(error) {
     next({

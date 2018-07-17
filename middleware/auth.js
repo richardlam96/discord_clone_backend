@@ -26,4 +26,37 @@ exports.loginRequired = async function(req, res, next) {
 	}
 }
 
-exports.ensureCorrectUser = async function(req, res, next) {}
+exports.ensureCorrectUser = async function(req, res, next) {
+	try { 
+		if (!req.headers.authorization) {
+			throw new Error('No auth headers given.');
+		}
+		const token = req.headers.authorization.split(' ')[1];
+		jwt.verify(token, process.env.SECRET_KEY, (err, payload) => {
+			// Check that User is logged in.
+			if (payload) {
+				// Check that User's id is matching the one in requested route.
+				if (payload.id === req.params.ownerId) {
+					// Can also check database if the database has the matching owner.
+					next();
+				} else {
+					next({
+						status: 403,
+						message: 'You do not have permissions to do that.',
+					});
+				}
+			} else {
+				next({
+					status: 401,
+					message: 'Please log in first',
+				});
+			}
+		});
+	} catch(error) {
+		next({
+			status: error.status,
+			message: error.message,
+		});
+	}
+}
+
