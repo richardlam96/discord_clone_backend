@@ -29,7 +29,7 @@ exports.register = async function(req, res, next) {
 		});
 	} catch(err) {
 		if (err.code === 11000) {
-			err.message = 'Sorry, username has been taken.';
+			err.message = 'Sorry, username has been take';
 		}
 		next({
 			status: 400,
@@ -47,7 +47,7 @@ exports.signin = async function(req, res, next) {
 		if (!user) {
 			next({
 				status: 401,
-				message: 'Could not find user with username.'
+				message: 'Username could not be found'
 			});
 		}
 
@@ -67,13 +67,13 @@ exports.signin = async function(req, res, next) {
 		} else {
 			next({
 				status: 401,
-				message: 'Invalid password.',
+				message: 'Invalid password',
 			});
 		}
 	} catch(err) {
 		next({
 			status: 401,
-			message: 'Invalid credentials.',
+			message: 'Invalid credentials',
 		});
 	}
 }
