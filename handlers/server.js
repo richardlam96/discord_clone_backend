@@ -1,9 +1,8 @@
 const db = require('../models');
 
 
-// These handlers will use userId/ownerId, so CRUD actions cannot be perormed
+// These handlers will use userId/ownerId, so CRUD actions cannot be performed
 // randomly.
-
 
 // Create a Server for a given User.
 exports.createServer = async function(req, res, next) {
@@ -14,7 +13,7 @@ exports.createServer = async function(req, res, next) {
 
     // Find owner and add new Server's id to owner's server array.
     let serverOwner = await db.User.findOne({
-      _id: req.body.ownerId,
+      _id: req.params.ownerId,
     });
     
     if (!serverOwner) {
@@ -32,10 +31,10 @@ exports.createServer = async function(req, res, next) {
     }
 
     // Add Owner to Server's member list and Server to Owner's owned Servers.
-    newServer.members.push(owner._id);
-    owner.servers.push(newServer._id);
+    newServer.members.push(serverOwner._id);
+    serverOwner.servers.push(newServer._id);
     await newServer.save();
-		await owner.save();
+		await serverOwner.save();
 
 		let { _id, name, owner, channels, members } = newServer;
     return res.status(200).json({
