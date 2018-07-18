@@ -29,7 +29,7 @@ exports.register = async function(req, res, next) {
 		});
 	} catch(err) {
 		if (err.code === 11000) {
-			err.message = 'Sorry, username has been take';
+			err.message = 'Sorry, username has been taken';
 		}
 		next({
 			status: 400,
