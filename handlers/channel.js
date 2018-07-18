@@ -17,7 +17,7 @@ async function findServer(serverId) {
 
 exports.createChannel = async function(req, res, next) {
   try {
-    let targetServer = findServer(req.params.serverId);
+    let targetServer = await findServer(req.params.serverId);
 
     let createdChannel = await db.Channel.create({
       name: req.body.name,
@@ -27,6 +27,10 @@ exports.createChannel = async function(req, res, next) {
     if (!createdChannel) {
       throw new Error('Could not create channel');
     }
+
+		// Add channel id to server.
+		targetServer.channels.push(createdChannel._id);
+		await targetServer.save();
 
     let { _id, name, server, chatbox } = createdChannel;
     return res.status(200).json({
@@ -46,8 +50,6 @@ exports.indexChannels = async function(req, res, next) {
     let channels = await db.Channel.find({
       server: req.params.serverId,
     });
-		console.log(req.params);
-		console.log(channels);
 
     let channelIds = [];
     let channelsById = channels.reduce((acc, channel) => {
@@ -70,7 +72,8 @@ exports.indexChannels = async function(req, res, next) {
 
 exports.updateChannel = async function(req, res, next) {
   try {
-    let targetServer = findServer(req.params.serverId);
+		// Check that server exists.
+    let targetServer = await findServer(req.params.serverId);
 
     let updatedChannel = await db.Channel.findOneAndUpdate(req.body);
 
@@ -91,7 +94,7 @@ exports.updateChannel = async function(req, res, next) {
 
 exports.deleteChannel = async function(req, res, next) {
   try {
-    let targetServer = findServer(req.params.serverId);
+    let targetServer = await findServer(req.params.serverId);
 
     let deletedChannel = await db.Channel.findOneAndDelete({
       _id: req.params.channelId,
