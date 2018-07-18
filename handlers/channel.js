@@ -17,7 +17,7 @@ async function findServer(serverId) {
 
 exports.createChannel = async function(req, res, next) {
   try {
-    let server = findServer(req.params.serverId);
+    let targetServer = findServer(req.params.serverId);
 
     let createdChannel = db.Channel.create({
       name: req.body.name,
@@ -42,7 +42,7 @@ exports.createChannel = async function(req, res, next) {
 
 exports.indexChannels = async function(req, res, next) {
   try {
-    let server = findServer(req.params.serverId);
+    let targetServer = findServer(req.params.serverId);
 
     let channels = db.Channel.find({
       server: req.params.serverId,
@@ -67,9 +67,9 @@ exports.indexChannels = async function(req, res, next) {
   }
 }
 
-exports.updateChannel = async functoin(req, res, next) {
+exports.updateChannel = async function(req, res, next) {
   try {
-    let server = findServer(req.params.serverId);
+    let targetServer = findServer(req.params.serverId);
 
     let updatedChannel = db.Channel.findOneAndUpdate(req.body);
 
@@ -90,7 +90,7 @@ exports.updateChannel = async functoin(req, res, next) {
 
 exports.deleteChannel = async function(req, res, next) {
   try {
-    let server = findServer(req.params.serverId);
+    let targetServer = findServer(req.params.serverId);
 
     let deletedChannel = db.Channel.findOneAndDelete({
       _id: req.params.channelId,

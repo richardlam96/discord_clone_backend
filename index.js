@@ -7,6 +7,7 @@ const { errorHandler } = require('./handlers/error');
 const { loginRequired } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
 const serverRoutes = require('./routes/server');
+const channelRoutes = require('./routes/channel');
 
 
 app.use(cors());
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 // Routes.
 app.use('/api/auth', authRoutes);
 app.use('/api/users', loginRequired, serverRoutes);
+app.use('/api/users', loginRequired, channelRoutes);
 
 // Default error and error handler.
 app.use(function(req, res, next) {
