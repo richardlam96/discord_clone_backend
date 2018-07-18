@@ -54,7 +54,6 @@ exports.indexServers = async function(req, res, next) {
     // Find Servers that are owned by User.
     let servers = await db.Server
       .find({ owner: req.params.ownerId })
-      .populate('channels');
 
 		let serverIds = [];
     let serversById = servers.reduce((acc, server) => {

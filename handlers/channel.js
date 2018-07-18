@@ -19,7 +19,7 @@ exports.createChannel = async function(req, res, next) {
   try {
     let targetServer = findServer(req.params.serverId);
 
-    let createdChannel = db.Channel.create({
+    let createdChannel = await db.Channel.create({
       name: req.body.name,
       server: req.params.serverId,
     });
@@ -42,11 +42,12 @@ exports.createChannel = async function(req, res, next) {
 
 exports.indexChannels = async function(req, res, next) {
   try {
-    let targetServer = findServer(req.params.serverId);
-
-    let channels = db.Channel.find({
+		// Find Channels.
+    let channels = await db.Channel.find({
       server: req.params.serverId,
     });
+		console.log(req.params);
+		console.log(channels);
 
     let channelIds = [];
     let channelsById = channels.reduce((acc, channel) => {
@@ -71,7 +72,7 @@ exports.updateChannel = async function(req, res, next) {
   try {
     let targetServer = findServer(req.params.serverId);
 
-    let updatedChannel = db.Channel.findOneAndUpdate(req.body);
+    let updatedChannel = await db.Channel.findOneAndUpdate(req.body);
 
     if (!updatedChannel) {
       throw new Error('Could not find channel');
@@ -92,7 +93,7 @@ exports.deleteChannel = async function(req, res, next) {
   try {
     let targetServer = findServer(req.params.serverId);
 
-    let deletedChannel = db.Channel.findOneAndDelete({
+    let deletedChannel = await db.Channel.findOneAndDelete({
       _id: req.params.channelId,
     });
 
