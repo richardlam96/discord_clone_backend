@@ -18,8 +18,8 @@ exports.register = async function(req, res, next) {
 
     // Assign token to new user with available information.
 		let token = jwt.sign({
+      id,
 			username,
-			password,
 		}, process.env.SECRET_KEY);
 		return res.status(200).json({
 			id,
