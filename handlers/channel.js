@@ -19,14 +19,19 @@ exports.createChannel = async function(req, res, next) {
   try {
     let targetServer = await findServer(req.params.serverId);
 
-    let createdChannel = db.Channel.create({
+    let createdChannel = await db.Channel.create({
       name: req.body.name,
       server: req.params.serverId,
+			owner: req.params.ownerId,
     });
 
     if (!createdChannel) {
       throw new Error('Could not create channel');
     }
+
+		// Add channel id to server.
+		targetServer.channels.push(createdChannel._id);
+		await targetServer.save();
 
     let { _id, name, server, chatbox } = createdChannel;
     return res.status(200).json({
@@ -40,38 +45,73 @@ exports.createChannel = async function(req, res, next) {
   }
 }
 
+<<<<<<< HEAD
 exports.indexChannels = async function(req, res, next) {
   try {
     let targetServer = await findServer(req.params.serverId);
+=======
+// exports.indexChannels = async function(req, res, next) {
+//   try {
+// 		// Find Channels.
+//     let channels = await db.Channel.find({
+//       server: req.params.serverId,
+//     });
+// 
+//     let channelIds = [];
+//     let channelsById = channels.reduce((acc, channel) => {
+//       acc[channel._id] = channel;
+//       channelIds.push(channel._id);
+//       return acc;
+//     }, {});
+// 
+//     return res.status(200).json({
+//       channelIds,
+//       channelsById,
+//     });
+//   } catch(error) {
+//     next({
+//       status: error.status,
+//       message: error.message,
+//     });
+//   }
+// }
+>>>>>>> f1a7f48c06c18e1897f541bcc547fc9c90773f4d
 
-    let channels = db.Channel.find({
-      server: req.params.serverId,
-    });
+exports.indexChannels = async function(req, res, next) {
+	try {
+		// Get all Channels by given User.
+		let channels = await db.Channel.find({
+			owner: req.params.ownerId,
+		});
 
-    let channelIds = [];
-    let channelsById = channels.reduce((acc, channel) => {
-      acc[channel._id] = channel;
-      channelIds.push(channel._id);
-      return acc;
-    }, {});
-
-    return res.status(200).json({
-      channelIds,
-      channelsById,
-    });
-  } catch(error) {
-    next({
-      status: error.status,
-      message: error.message,
-    });
-  }
+		let channelIds = [];
+		let channelsById = channels.reduce((acc, channel) => {
+			acc[channel._id] = channel;
+			channelIds.push(channel._id);
+			return acc;
+		}, {});
+		return res.status(200).json({
+			channelsById,
+			channelIds,
+		});
+	} catch(error) {
+		next({
+			status: error.status,
+			message: error.message,
+		});
+	}
 }
+
 
 exports.updateChannel = async function(req, res, next) {
   try {
+<<<<<<< HEAD
+=======
+		// Check that server exists.
+>>>>>>> f1a7f48c06c18e1897f541bcc547fc9c90773f4d
     let targetServer = await findServer(req.params.serverId);
 
-    let updatedChannel = db.Channel.findOneAndUpdate(req.body);
+    let updatedChannel = await db.Channel.findOneAndUpdate(req.body);
 
     if (!updatedChannel) {
       throw new Error('Could not find channel');
@@ -92,7 +132,7 @@ exports.deleteChannel = async function(req, res, next) {
   try {
     let targetServer = await findServer(req.params.serverId);
 
-    let deletedChannel = db.Channel.findOneAndDelete({
+    let deletedChannel = await db.Channel.findOneAndDelete({
       _id: req.params.channelId,
     });
 

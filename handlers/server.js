@@ -54,7 +54,6 @@ exports.indexServers = async function(req, res, next) {
     // Find Servers that are owned by User.
     let servers = await db.Server
       .find({ owner: req.params.ownerId })
-      .populate('channels');
 
 		let serverIds = [];
     let serversById = servers.reduce((acc, server) => {
@@ -109,9 +108,16 @@ exports.deleteServer = async function(req, res, next) {
       _id: req.params.serverId,
     });
 
+		// Remove Channels with ServerId
+		let removedChannels = await db.Channel.remove({
+			server: req.params.serverId,
+		});
+
     if (!removedServer) {
       throw new Error('Server not found in database.');
     }
+
+		// Remove Server from Users.
 
     return res.status(200).json({
       ...removedServer._doc,
