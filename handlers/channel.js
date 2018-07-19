@@ -45,11 +45,6 @@ exports.createChannel = async function(req, res, next) {
   }
 }
 
-<<<<<<< HEAD
-exports.indexChannels = async function(req, res, next) {
-  try {
-    let targetServer = await findServer(req.params.serverId);
-=======
 // exports.indexChannels = async function(req, res, next) {
 //   try {
 // 		// Find Channels.
@@ -75,7 +70,6 @@ exports.indexChannels = async function(req, res, next) {
 //     });
 //   }
 // }
->>>>>>> f1a7f48c06c18e1897f541bcc547fc9c90773f4d
 
 exports.indexChannels = async function(req, res, next) {
 	try {
@@ -90,13 +84,14 @@ exports.indexChannels = async function(req, res, next) {
 			channelIds.push(channel._id);
 			return acc;
 		}, {});
+    
 		return res.status(200).json({
 			channelsById,
 			channelIds,
 		});
 	} catch(error) {
 		next({
-			status: error.status,
+			status: 400,
 			message: error.message,
 		});
 	}
@@ -105,10 +100,7 @@ exports.indexChannels = async function(req, res, next) {
 
 exports.updateChannel = async function(req, res, next) {
   try {
-<<<<<<< HEAD
-=======
 		// Check that server exists.
->>>>>>> f1a7f48c06c18e1897f541bcc547fc9c90773f4d
     let targetServer = await findServer(req.params.serverId);
 
     let updatedChannel = await db.Channel.findOneAndUpdate(req.body);

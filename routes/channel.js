@@ -9,8 +9,10 @@ const {
 } = require('../handlers/channel');
 
 
+router.route('/:ownerId/channels')
+  .get(ensureCorrectUser, indexChannels);
+
 router.route('/:ownerId/servers/:serverId/channels')
-  .get(ensureCorrectUser, indexChannels)
   .post(ensureCorrectUser, createChannel);
 
 router.route('/:ownerId/servers/:serverId/channels/:channelId')
