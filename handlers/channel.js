@@ -132,6 +132,11 @@ exports.deleteChannel = async function(req, res, next) {
       throw new Error('Could not find channel');
     }
 
+    // Remove channel from server's channel list
+    let removeChannel = targetServer.channels.indexOf(deletedChannel._id);
+    targetServer.channels.splice(removeChannel, 1);
+    await targetServer.save();
+
     return res.status(200).json({
       ...deletedChannel._doc,
     });
