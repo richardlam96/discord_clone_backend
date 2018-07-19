@@ -22,6 +22,7 @@ exports.createChannel = async function(req, res, next) {
     let createdChannel = await db.Channel.create({
       name: req.body.name,
       server: req.params.serverId,
+			owner: req.params.ownerId,
     });
 
     if (!createdChannel) {
@@ -44,31 +45,57 @@ exports.createChannel = async function(req, res, next) {
   }
 }
 
+// exports.indexChannels = async function(req, res, next) {
+//   try {
+// 		// Find Channels.
+//     let channels = await db.Channel.find({
+//       server: req.params.serverId,
+//     });
+// 
+//     let channelIds = [];
+//     let channelsById = channels.reduce((acc, channel) => {
+//       acc[channel._id] = channel;
+//       channelIds.push(channel._id);
+//       return acc;
+//     }, {});
+// 
+//     return res.status(200).json({
+//       channelIds,
+//       channelsById,
+//     });
+//   } catch(error) {
+//     next({
+//       status: error.status,
+//       message: error.message,
+//     });
+//   }
+// }
+
 exports.indexChannels = async function(req, res, next) {
-  try {
-		// Find Channels.
-    let channels = await db.Channel.find({
-      server: req.params.serverId,
-    });
+	try {
+		// Get all Channels by given User.
+		let channels = await db.Channel.find({
+			owner: req.params.ownerId,
+		});
 
-    let channelIds = [];
-    let channelsById = channels.reduce((acc, channel) => {
-      acc[channel._id] = channel;
-      channelIds.push(channel._id);
-      return acc;
-    }, {});
-
-    return res.status(200).json({
-      channelIds,
-      channelsById,
-    });
-  } catch(error) {
-    next({
-      status: error.status,
-      message: error.message,
-    });
-  }
+		let channelIds = [];
+		let channelsById = channels.reduce((acc, channel) => {
+			acc[channel._id] = channel;
+			channelIds.push(channel._id);
+			return acc;
+		}, {});
+		return res.status(200).json({
+			channelsById,
+			channelIds,
+		});
+	} catch(error) {
+		next({
+			status: error.status,
+			message: error.message,
+		});
+	}
 }
+
 
 exports.updateChannel = async function(req, res, next) {
   try {
