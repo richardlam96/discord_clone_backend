@@ -4,10 +4,10 @@ const db = require('../models');
 exports.createMessage = async function(req, res, next) {
 	try {
 		// Find channel.
-		let channel = await db.Channel.findOne({
+		let targetChannel = await db.Channel.findOne({
 			_id: req.params.channelId,
 		});
-		if (!channel) {
+		if (!targetChannel) {
 			next({
 				status: 400,
 				message: 'Could not find channel',
@@ -18,7 +18,7 @@ exports.createMessage = async function(req, res, next) {
 		let message = await db.Message.create({
 			text: req.body.text,
 			user: req.params.userId,
-			channel: channel._id,
+			channel: targetChannel._id,
 		});
 		if (!message) {
 			next({ 
@@ -26,9 +26,13 @@ exports.createMessage = async function(req, res, next) {
 				message: 'Could not create message',
 			});
 		}
+		// Add messageId to channel.
+		targetChannel.messages.push(message._id);
+		await targetChannel.save();
 
+		let { _id, channel, text } = message;
 		return res.status(200).json({
-			...message,
+			_id, channel, text,
 		});
 	} catch(error) {
 		next({
@@ -40,21 +44,29 @@ exports.createMessage = async function(req, res, next) {
 
 exports.indexMessages = async function(req, res, next) {
 	try {
-		// Find channel.
-		let channel = await db.Channel.findOne({
-			_id: req.params.channelId,
-		});
-		if (!channel) {
-			next({ 
-				status: 400,
-				message: 'Could not find channel',
-			});
-		}
+		// // Find channel.
+		// let channel = await db.Channel.findOne({
+		// 	_id: req.params.channelId,
+		// });
+		// if (!channel) {
+		// 	next({ 
+		// 		status: 400,
+		// 		message: 'Could not find channel',
+		// 	});
+		// }
 
+		console.log('yaaaaaaay', req.params);
 		// Get all messages for channel.
 		let messages = await db.Message.find({
 			channel: req.params.channelId,
 		});
+
+		if (!messages) {
+			next({
+				status: 400,
+				message: 'Could not access messages',
+			});
+		}
 
 		// Parse to normalized format.
 		let messageIds = [];
@@ -71,7 +83,7 @@ exports.indexMessages = async function(req, res, next) {
 	} catch(error) {
 		next({
 			status: 400,
-			message: error.messsage,
+			message: error.message,
 		});
 	}
 }

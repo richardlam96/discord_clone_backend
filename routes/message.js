@@ -9,7 +9,7 @@ const {
 
 router.route('/:ownerId/channels/:channelId/messages')
 	.get(indexMessages)
-	.post(createMessages);
+	.post(createMessage);
 
 
 module.exports = router;

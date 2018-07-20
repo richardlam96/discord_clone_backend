@@ -15,7 +15,7 @@ var channelSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Server',
   },
-  chatbox: [{
+  messages: [{
     type: String,
   }],
 });
