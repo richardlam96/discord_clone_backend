@@ -7,8 +7,10 @@ const {
 } = require('../handlers/message');
 
 
-router.route('/:ownerId/channels/:channelId/messages')
+router.route('/servers/:serverId/messages')
 	.get(indexMessages)
+
+router.route('/servers/:serverId/channels/:channelId/messages')
 	.post(createMessage);
 
 

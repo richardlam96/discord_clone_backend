@@ -19,6 +19,7 @@ exports.createMessage = async function(req, res, next) {
 			text: req.body.text,
 			user: req.params.userId,
 			channel: targetChannel._id,
+      server: req.params.serverId,
 		});
 		if (!message) {
 			next({ 
@@ -30,9 +31,9 @@ exports.createMessage = async function(req, res, next) {
 		targetChannel.messages.push(message._id);
 		await targetChannel.save();
 
-		let { _id, channel, text } = message;
+		let { _id, server, channel, text } = message;
 		return res.status(200).json({
-			_id, channel, text,
+			_id, server, channel, text,
 		});
 	} catch(error) {
 		next({
@@ -55,10 +56,10 @@ exports.indexMessages = async function(req, res, next) {
 		// 	});
 		// }
 
-		console.log('yaaaaaaay', req.params);
 		// Get all messages for channel.
+    console.log(req.params.serverId);
 		let messages = await db.Message.find({
-			channel: req.params.channelId,
+			server: req.params.serverId,
 		});
 
 		if (!messages) {

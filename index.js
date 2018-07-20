@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', loginRequired, serverRoutes);
 app.use('/api/users', loginRequired, channelRoutes);
-app.use('/api/users', loginRequired, messageRoutes);
+app.use('/api', loginRequired, messageRoutes);
 
 // Default error and error handler.
 app.use(function(req, res, next) {
