@@ -57,7 +57,6 @@ exports.indexMessages = async function(req, res, next) {
 		// }
 
 		// Get all messages for channel.
-    console.log(req.params.serverId);
 		let messages = await db.Message.find({
 			server: req.params.serverId,
 		});
@@ -69,6 +68,8 @@ exports.indexMessages = async function(req, res, next) {
 			});
 		}
 
+		console.log(messages);
+
 		// Parse to normalized format.
 		let messageIds = [];
 		let messagesById = messages.reduce((acc, message) => {
@@ -76,6 +77,7 @@ exports.indexMessages = async function(req, res, next) {
 			messageIds.push(message._id);
 			return acc;
 		}, {});
+		console.log(messagesById);
 
 		return res.status(200).json({
 			messagesById,
