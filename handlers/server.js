@@ -103,22 +103,43 @@ exports.updateServer = async function(req, res, next) {
 // Delete a Server for a User.
 exports.deleteServer = async function(req, res, next) {
   try {
-    // Find and delete target Server.
-    let removedServer = await db.Server.findOneAndDelete({
-      _id: req.params.serverId,
+    // Find the Server's User.
+    let user = await db.User.findOne({
+      _id: req.params.userId,
     });
-
-		// Remove Channels with ServerId
-		let removedChannels = await db.Channel.remove({
-			server: req.params.serverId,
-		});
-
-    if (!removedServer) {
-      throw new Error('Server not found in database.');
+    if (!user) {
+      throw new Error('User could not be found'):
     }
 
-		// Remove Server from Users.
+    // Find the Server.
+    let removedServer = await db.Server.findOneAndDelete({
+      _id: req.params.serverId,
+      owner: req.params.userId,
+    });
+    if (!server) {
+      throw new Error('Server could not be found');
+    }
 
+    // Create promises for deleting the related Channels and Messages.
+    let promises = [];
+    promises.push(
+      db.Channel.remove({
+        server: req.params.serverId,
+      }),
+      db.Message.remove({
+        server: req.params.serverId,
+      })
+    );
+
+    // Fullfill all Promises.
+    await Promise.all(promises);
+    
+		// Remove Server from Users.
+    let removedServerIndex = user.servers.indexOf(req.params.serverId);
+    user.servers.splice(removedServerIndex, 1);
+    await user.save();
+
+    // Return information of removed Server.
     return res.status(200).json({
       ...removedServer._doc,
     });

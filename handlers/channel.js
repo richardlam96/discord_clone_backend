@@ -122,19 +122,25 @@ exports.updateChannel = async function(req, res, next) {
 
 exports.deleteChannel = async function(req, res, next) {
   try {
+    // Find the Server.
     let targetServer = await findServer(req.params.serverId);
 
+    // Delete Channel.
     let deletedChannel = await db.Channel.findOneAndDelete({
       _id: req.params.channelId,
     });
-
     if (!deletedChannel) {
       throw new Error('Could not find channel');
     }
 
+    // Remove messages in Channel.
+    let deletedMessages = await db.Message.remove({
+      channel: req.params.channelId,
+    });
+
     // Remove channel from server's channel list
-    let removeChannel = targetServer.channels.indexOf(deletedChannel._id);
-    targetServer.channels.splice(removeChannel, 1);
+    let removedChannel = targetServer.channels.indexOf(deletedChannel._id);
+    targetServer.channels.splice(removedChannel, 1);
     await targetServer.save();
 
     return res.status(200).json({
