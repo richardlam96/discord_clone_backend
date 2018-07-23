@@ -6,7 +6,7 @@ const {
 } = require('../handlers/message');
 
 
-const RESTFUL_ROUTE = '/api/users/:userId/'
+const RESTFUL_ROUTE = '/api/users/:userId/servers/:serverId/'
                       + 'channels/:channelId/messages';
 
 router.route(RESTFUL_ROUTE + '/')

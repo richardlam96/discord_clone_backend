@@ -19,6 +19,7 @@ exports.createMessage = async function(req, res, next) {
 			text: req.body.text,
 			user: req.params.userId,
 			channel: targetChannel._id,
+			server: req.params.serverId,
 		});
 		if (!message) {
 			next({ 
