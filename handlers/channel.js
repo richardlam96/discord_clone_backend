@@ -1,6 +1,7 @@
 const db = require('../models');
 
 
+// Function to handle finding server and throwing errors if not found.
 async function findServer(serverId) {
   let server = await db.Server.findOne({
     _id: serverId,
@@ -14,7 +15,6 @@ async function findServer(serverId) {
 }
 
 
-
 exports.createChannel = async function(req, res, next) {
   try {
     // Find the Server.
@@ -24,7 +24,6 @@ exports.createChannel = async function(req, res, next) {
     let createdChannel = await db.Channel.create({
       name: req.body.name,
       server: req.params.serverId,
-			owner: req.params.ownerId,
     });
     if (!createdChannel) {
       throw new Error('Could not create channel');
@@ -34,9 +33,9 @@ exports.createChannel = async function(req, res, next) {
 		targetServer.channels.push(createdChannel._id);
 		await targetServer.save();
 
-    let { _id, name, owner, server, messages } = createdChannel;
+    let { _id, name, server, messages } = createdChannel;
     return res.status(200).json({
-      _id, name, owner, server, messages,
+      _id, name, server, messages,
     });
   } catch(error) {
     next({
@@ -46,39 +45,14 @@ exports.createChannel = async function(req, res, next) {
   }
 }
 
-// exports.indexChannels = async function(req, res, next) {
-//   try {
-// 		// Find Channels.
-//     let channels = await db.Channel.find({
-//       server: req.params.serverId,
-//     });
-// 
-//     let channelIds = [];
-//     let channelsById = channels.reduce((acc, channel) => {
-//       acc[channel._id] = channel;
-//       channelIds.push(channel._id);
-//       return acc;
-//     }, {});
-// 
-//     return res.status(200).json({
-//       channelIds,
-//       channelsById,
-//     });
-//   } catch(error) {
-//     next({
-//       status: error.status,
-//       message: error.message,
-//     });
-//   }
-// }
-
 exports.indexChannels = async function(req, res, next) {
 	try {
-		// Get all Channels by given User.
+		// Get all Channels in the given Server.
 		let channels = await db.Channel.find({
-			owner: req.params.ownerId,
+			server: req.params.serverId,
 		});
 
+		// Format results into normalized form.
 		let channelIds = [];
 		let channelsById = channels.reduce((acc, channel) => {
 			acc[channel._id] = channel;
@@ -101,9 +75,8 @@ exports.indexChannels = async function(req, res, next) {
 
 exports.updateChannel = async function(req, res, next) {
   try {
-		// Check that server exists.
+		// Check that Server exists and update the Channel.
     let targetServer = await findServer(req.params.serverId);
-
     let updatedChannel = await db.Channel.findOneAndUpdate(req.body);
 
     if (!updatedChannel) {

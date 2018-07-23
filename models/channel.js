@@ -7,10 +7,6 @@ var channelSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-	owner: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-	},
   server: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Server',

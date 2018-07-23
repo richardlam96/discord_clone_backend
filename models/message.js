@@ -14,10 +14,6 @@ var messageSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Channel',
 	},
-  server: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Server',
-  },
 });
 
 
