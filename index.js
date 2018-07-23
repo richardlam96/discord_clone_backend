@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { errorHandler } = require('./handlers/error');
-const { loginRequired } = require('./middleware/auth');
+const { loginRequired, ensureCorrectUser } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
 const serverRoutes = require('./routes/server');
 const channelRoutes = require('./routes/channel');
@@ -16,9 +16,21 @@ app.use(bodyParser.json());
 
 // Routes.
 app.use('/api/auth', authRoutes);
-app.use('/api/users', loginRequired, serverRoutes);
-app.use('/api/users', loginRequired, channelRoutes);
-app.use('/api', loginRequired, messageRoutes);
+app.use('/api/users/:userId/servers', 
+  loginRequired,
+  ensureCorrectUser,
+  serverRoutes
+);
+app.use('/api/users/:userId/servers/:serverId/channels', 
+  loginRequired, 
+  ensureCorrectUser,
+  channelRoutes
+);
+app.use('/api/users/:userId/servers/:serverId/channels/:channelId/messages', 
+  loginRequired, 
+  ensureCorrectUser,
+  messageRoutes
+);
 
 // Default error and error handler.
 app.use(function(req, res, next) {

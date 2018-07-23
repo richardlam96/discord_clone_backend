@@ -40,7 +40,7 @@ exports.ensureCorrectUser = async function(req, res, next) {
         console.log('token', token);
         console.log('payload', payload);
 				// Check that User's id is matching the one in requested route.
-				if (payload.id === req.params.ownerId) {
+				if (payload.id === req.params.userId) {
 					// Can also check database if the database has the matching owner.
 					next();
 				} else {
@@ -48,7 +48,7 @@ exports.ensureCorrectUser = async function(req, res, next) {
 					next({
 						status: 403,
 						// message: 'You do not have permissions to do that.',
-						message: `params id: ${req.params.ownerId}, payload id: ${payload.id}`,
+						message: `params id: ${req.params.userId}, payload id: ${payload.id}`,
 					});
 				}
 			} else {

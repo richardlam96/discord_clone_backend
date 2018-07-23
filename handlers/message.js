@@ -27,6 +27,7 @@ exports.createMessage = async function(req, res, next) {
 				message: 'Could not create message',
 			});
 		}
+
 		// Add messageId to channel.
 		targetChannel.messages.push(message._id);
 		await targetChannel.save();
@@ -45,17 +46,6 @@ exports.createMessage = async function(req, res, next) {
 
 exports.indexMessages = async function(req, res, next) {
 	try {
-		// // Find channel.
-		// let channel = await db.Channel.findOne({
-		// 	_id: req.params.channelId,
-		// });
-		// if (!channel) {
-		// 	next({ 
-		// 		status: 400,
-		// 		message: 'Could not find channel',
-		// 	});
-		// }
-
 		// Get all messages for channel.
 		let messages = await db.Message.find({
 			server: req.params.serverId,
@@ -67,8 +57,6 @@ exports.indexMessages = async function(req, res, next) {
 				message: 'Could not access messages',
 			});
 		}
-
-		console.log(messages);
 
 		// Parse to normalized format.
 		let messageIds = [];

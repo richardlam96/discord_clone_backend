@@ -17,19 +17,20 @@ async function findServer(serverId) {
 
 exports.createChannel = async function(req, res, next) {
   try {
+    // Find the Server.
     let targetServer = await findServer(req.params.serverId);
 
+    // Create the Channel.
     let createdChannel = await db.Channel.create({
       name: req.body.name,
       server: req.params.serverId,
 			owner: req.params.ownerId,
     });
-
     if (!createdChannel) {
       throw new Error('Could not create channel');
     }
 
-		// Add channel id to server.
+		// Add Channel id to Server.
 		targetServer.channels.push(createdChannel._id);
 		await targetServer.save();
 
@@ -125,6 +126,11 @@ exports.deleteChannel = async function(req, res, next) {
     // Find the Server.
     let targetServer = await findServer(req.params.serverId);
 
+    // Remove messages in Channel.
+    let deletedMessages = await db.Message.remove({
+      channel: req.params.channelId,
+    });
+
     // Delete Channel.
     let deletedChannel = await db.Channel.findOneAndDelete({
       _id: req.params.channelId,
@@ -132,11 +138,6 @@ exports.deleteChannel = async function(req, res, next) {
     if (!deletedChannel) {
       throw new Error('Could not find channel');
     }
-
-    // Remove messages in Channel.
-    let deletedMessages = await db.Message.remove({
-      channel: req.params.channelId,
-    });
 
     // Remove channel from server's channel list
     let removedChannel = targetServer.channels.indexOf(deletedChannel._id);

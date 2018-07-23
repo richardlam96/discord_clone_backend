@@ -1,21 +1,20 @@
 const db = require('../models');
 
 
-// These handlers will use userId/ownerId, so CRUD actions cannot be performed
+// These handlers will use userId/userId, so CRUD actions cannot be performed
 // randomly.
 
 // Create a Server for a given User.
 exports.createServer = async function(req, res, next) {
   try {
-		if (!req.params.ownerId) {
-			throw new Error('No ownerId parameter');
+		if (!req.params.userId) {
+			throw new Error('No userId parameter');
 		}
 
     // Find owner and add new Server's id to owner's server array.
     let serverOwner = await db.User.findOne({
-      _id: req.params.ownerId,
+      _id: req.params.userId,
     });
-    
     if (!serverOwner) {
       throw new Error('Could not find user.');
     }
@@ -25,7 +24,6 @@ exports.createServer = async function(req, res, next) {
       name: req.body.name,
       owner: serverOwner._id,
     });
-
     if (!newServer) {
       throw new Error('Could not create server.');
     }
@@ -53,7 +51,7 @@ exports.indexServers = async function(req, res, next) {
   try {
     // Find Servers that are owned by User.
     let servers = await db.Server
-      .find({ owner: req.params.ownerId })
+      .find({ owner: req.params.userId })
 
 		let serverIds = [];
     let serversById = servers.reduce((acc, server) => {
@@ -80,7 +78,7 @@ exports.updateServer = async function(req, res, next) {
     // Find the Server that needs to be updated.
     let server = await db.Server.findOneAndUpdate({
       _id: req.params.serverId,
-      owner: req.body.ownerId,
+      owner: req.body.userId,
     }, {
       name: req.body.name,
     }, { new: true });
@@ -111,15 +109,6 @@ exports.deleteServer = async function(req, res, next) {
       throw new Error('User could not be found'):
     }
 
-    // Find the Server.
-    let removedServer = await db.Server.findOneAndDelete({
-      _id: req.params.serverId,
-      owner: req.params.userId,
-    });
-    if (!server) {
-      throw new Error('Server could not be found');
-    }
-
     // Create promises for deleting the related Channels and Messages.
     let promises = [];
     promises.push(
@@ -133,9 +122,18 @@ exports.deleteServer = async function(req, res, next) {
 
     // Fullfill all Promises.
     await Promise.all(promises);
-    
+ 
+    // Find the Server.
+    let removedServer = await db.Server.findOneAndDelete({
+      _id: req.params.serverId,
+      owner: req.params.userId,
+    });
+    if (!server) {
+      throw new Error('Server could not be found');
+    }
+   
 		// Remove Server from Users.
-    let removedServerIndex = user.servers.indexOf(req.params.serverId);
+    let removedServerIndex = user.servers.indexOf(removedServer._id);
     user.servers.splice(removedServerIndex, 1);
     await user.save();
 

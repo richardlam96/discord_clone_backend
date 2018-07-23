@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { ensureCorrectUser } = require('../middleware/auth');
 const { 
   createChannel,
   indexChannels,
@@ -9,15 +8,15 @@ const {
 } = require('../handlers/channel');
 
 
-router.route('/:ownerId/channels')
-  .get(ensureCorrectUser, indexChannels);
+const RESTFUL_ROUTE = '/api/users/:userId/servers/:serverId/channels';
 
-router.route('/:ownerId/servers/:serverId/channels')
-  .post(ensureCorrectUser, createChannel);
+router.route(RESTFUL_ROUTE + '/')
+  .get(indexChannels);
+  .post(createChannel);
 
-router.route('/:ownerId/servers/:serverId/channels/:channelId')
-  .put(ensureCorrectUser, updateChannel)
-  .delete(ensureCorrectUser, deleteChannel);
+router.route(RESTFUL_ROUTE + '/:channelId')
+  .put(updateChannel)
+  .delete(deleteChannel);
 
 
 module.exports = router;

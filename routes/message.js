@@ -1,16 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const { ensureCorrectUser } = require('../middleware/auth');
 const { 
 	createMessage,
 	indexMessages,
 } = require('../handlers/message');
 
 
-router.route('/servers/:serverId/messages')
+const RESTFUL_ROUTE = '/api/users/:userId/servers/:serverId/' 
+                      + 'channels/:channelId/messages';
+
+
+// Slightly shortened route for easier messaging access.                  
+router.route('/api/users/:userId/servers/:serverId/messages/')
 	.get(indexMessages)
 
-router.route('/servers/:serverId/channels/:channelId/messages')
+router.route(RESTFUL_ROUTE + '/')
 	.post(createMessage);
 
 

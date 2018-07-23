@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { ensureCorrectUser } = require('../middleware/auth');
 const { 
   createServer,
   indexServers,
@@ -9,13 +8,15 @@ const {
 } = require('../handlers/server');
 
 
-router.route('/:ownerId/servers')
-  .get(indexServers)
+const RESTFUL_ROUTE = '/api/users/:userId/servers';
+
+router.route(RESTFUL_ROUTE + '/')
+  .get(indexServers);
   .post(createServer);
 
-router.route('/:ownerId/servers/:serverId')
-  .put(ensureCorrectUser, updateServer)
-  .delete(ensureCorrectUser, deleteServer);
+router.route(RESTFUL_ROUTE + '/:serverId')
+  .put(updateServer)
+  .delete(deleteServer);
 
 
 module.exports = router;
