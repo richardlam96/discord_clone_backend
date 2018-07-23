@@ -11,7 +11,7 @@ const {
 const RESTFUL_ROUTE = '/api/users/:userId/servers/:serverId/channels';
 
 router.route(RESTFUL_ROUTE + '/')
-  .get(indexChannels);
+  .get(indexChannels)
   .post(createChannel);
 
 router.route(RESTFUL_ROUTE + '/:channelId')

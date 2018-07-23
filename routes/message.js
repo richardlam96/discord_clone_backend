@@ -12,7 +12,7 @@ const RESTFUL_ROUTE = '/api/users/:userId/servers/:serverId/'
 
 // Slightly shortened route for easier messaging access.                  
 router.route('/api/users/:userId/servers/:serverId/messages/')
-	.get(indexMessages)
+	.get(indexMessages);
 
 router.route(RESTFUL_ROUTE + '/')
 	.post(createMessage);

@@ -106,7 +106,7 @@ exports.deleteServer = async function(req, res, next) {
       _id: req.params.userId,
     });
     if (!user) {
-      throw new Error('User could not be found'):
+      throw new Error('User could not be found');
     }
 
     // Create promises for deleting the related Channels and Messages.

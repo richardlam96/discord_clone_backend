@@ -11,7 +11,7 @@ const {
 const RESTFUL_ROUTE = '/api/users/:userId/servers';
 
 router.route(RESTFUL_ROUTE + '/')
-  .get(indexServers);
+  .get(indexServers)
   .post(createServer);
 
 router.route(RESTFUL_ROUTE + '/:serverId')
