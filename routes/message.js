@@ -6,10 +6,10 @@ const {
 } = require('../handlers/message');
 
 
-// Can use: /api/users/:userId/servers/:serverId/messages
-// Only slightly shorter.
-// 
-router.route('/')
+const RESTFUL_ROUTE = '/api/users/:userId/servers/:serverId/' 
+                      + 'channels/:channelId/messages';
+
+router.route(RESTFUL_ROUTE + '/')
 	.get(indexMessages)
 	.post(createMessage);
 

@@ -49,6 +49,10 @@ exports.createServer = async function(req, res, next) {
 // Fetch all Servers that a given User owns.
 exports.indexServers = async function(req, res, next) {
   try {
+    if (!req.params.userId) {
+      throw new Error('No user id given.');
+    }
+
     // Find Servers that are owned by User.
     let servers = await db.Server
       .find({ owner: req.params.userId })

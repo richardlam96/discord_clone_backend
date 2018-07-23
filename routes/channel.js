@@ -8,12 +8,13 @@ const {
 } = require('../handlers/channel');
 
 
+const RESTFUL_ROUTE = '/api/users/:userId/servers/:serverId/channels';
 
-router.route('/')
+router.route(RESTFUL_ROUTE + '/')
   .get(indexChannels)
   .post(createChannel);
 
-router.route('/:channelId')
+router.route(RESTFUL_ROUTE + '/:channelId')
   .put(updateChannel)
   .delete(deleteChannel);
 

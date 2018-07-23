@@ -16,17 +16,17 @@ app.use(bodyParser.json());
 
 // Routes.
 app.use('/api/auth', authRoutes);
-app.use('/api/users/:userId/servers', 
+app.use(
   // loginRequired,
   // ensureCorrectUser,
   serverRoutes
 );
-app.use('/api/users/:userId/servers/:serverId/channels', 
+app.use(
   loginRequired, 
   ensureCorrectUser,
   channelRoutes
 );
-app.use('/api/users/:userId/servers/:serverId/channels/:channelId/messages', 
+app.use(
   loginRequired, 
   ensureCorrectUser,
   messageRoutes
