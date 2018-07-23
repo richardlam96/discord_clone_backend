@@ -8,13 +8,12 @@ const {
 } = require('../handlers/server');
 
 
-const RESTFUL_ROUTE = '/api/users/:userId/servers';
 
-router.route(RESTFUL_ROUTE + '/')
+router.route('/')
   .get(indexServers)
   .post(createServer);
 
-router.route(RESTFUL_ROUTE + '/:serverId')
+router.route('/:serverId')
   .put(updateServer)
   .delete(deleteServer);
 

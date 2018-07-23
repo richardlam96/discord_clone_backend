@@ -17,8 +17,8 @@ app.use(bodyParser.json());
 // Routes.
 app.use('/api/auth', authRoutes);
 app.use('/api/users/:userId/servers', 
-  loginRequired,
-  ensureCorrectUser,
+  // loginRequired,
+  // ensureCorrectUser,
   serverRoutes
 );
 app.use('/api/users/:userId/servers/:serverId/channels', 
