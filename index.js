@@ -22,13 +22,13 @@ app.use(
   serverRoutes
 );
 app.use(
-  loginRequired, 
-  ensureCorrectUser,
+  // loginRequired, 
+  // ensureCorrectUser,
   channelRoutes
 );
 app.use(
-  loginRequired, 
-  ensureCorrectUser,
+  // loginRequired, 
+  // ensureCorrectUser,
   messageRoutes
 );
 

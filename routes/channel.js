@@ -3,6 +3,7 @@ const router = express.Router();
 const { 
   createChannel,
   indexChannels,
+	indexChannelsByUser,
   updateChannel,
   deleteChannel,
 } = require('../handlers/channel');
@@ -18,5 +19,8 @@ router.route(RESTFUL_ROUTE + '/:channelId')
   .put(updateChannel)
   .delete(deleteChannel);
 
+// Custom route to index by User.
+router.route('/api/users/:userId/channels/')
+	.get(indexChannelsByUser);
 
 module.exports = router;

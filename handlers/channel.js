@@ -24,6 +24,7 @@ exports.createChannel = async function(req, res, next) {
     let createdChannel = await db.Channel.create({
       name: req.body.name,
       server: req.params.serverId,
+			owner: req.params.userId,
     });
     if (!createdChannel) {
       throw new Error('Could not create channel');
@@ -71,6 +72,40 @@ exports.indexChannels = async function(req, res, next) {
 		});
 	}
 }
+
+exports.indexChannelsByUser = async function(req, res, next) {
+	// This function attempts to make using Redux Store easier by 
+	// loading by giving the opporunity to load all Servers and Channels
+	// belonging to the User once they log in.
+	// Because the Servers and Channels are controlled by the User, and no other
+	// outside sources, this is okay.
+	try {
+		// Get all Channels for User.
+		let channels = await db.Channel.find({
+			owner: req.params.userId,
+		});
+
+		// Format to normalized form.
+		let channelIds = [];
+		let channelsById = channels.reduce((acc, channel) => {
+			acc[channel._id] = channel;
+			channelIds.push(channel._id);
+			return acc;
+		}, {});
+    
+		return res.status(200).json({
+			channelsById,
+			channelIds,
+		});
+	} catch(error) {
+		next({
+			status: 400,
+			message: error.message,
+		});
+	}
+}
+
+
 
 
 exports.updateChannel = async function(req, res, next) {

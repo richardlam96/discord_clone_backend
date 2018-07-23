@@ -132,7 +132,7 @@ exports.deleteServer = async function(req, res, next) {
       _id: req.params.serverId,
       owner: req.params.userId,
     });
-    if (!server) {
+    if (!removedServer) {
       throw new Error('Server could not be found');
     }
    
