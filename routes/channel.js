@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const { 
   createChannel,
   indexChannels,
@@ -9,7 +9,7 @@ const {
 } = require('../handlers/channel');
 
 
-const RESTFUL_ROUTE = '/api/users/:userId/servers/:serverId/channels';
+const RESTFUL_ROUTE = '/servers/:serverId/channels';
 
 router.route(RESTFUL_ROUTE + '/')
   .get(indexChannels)
@@ -20,7 +20,7 @@ router.route(RESTFUL_ROUTE + '/:channelId')
   .delete(deleteChannel);
 
 // Custom route to index by User.
-router.route('/api/users/:userId/channels/')
+router.route('/channels')
 	.get(indexChannelsByUser);
 
 module.exports = router;

@@ -1,12 +1,12 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const { 
 	createMessage,
 	indexMessages,
 } = require('../handlers/message');
 
 
-const RESTFUL_ROUTE = '/api/users/:userId/servers/:serverId/'
+const RESTFUL_ROUTE = '/servers/:serverId/'
                       + 'channels/:channelId/messages';
 
 router.route(RESTFUL_ROUTE + '/')

@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const { 
   createServer,
   indexServers,
@@ -8,7 +8,7 @@ const {
 } = require('../handlers/server');
 
 
-const RESTFUL_ROUTE = '/api/users/:userId/servers';
+const RESTFUL_ROUTE = '/servers';
 
 router.route(RESTFUL_ROUTE + '/')
   .get(indexServers)

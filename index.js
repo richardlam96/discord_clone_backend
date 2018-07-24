@@ -16,19 +16,18 @@ app.use(bodyParser.json());
 
 // Routes.
 app.use('/api/auth', authRoutes);
-app.use(
-  // loginRequired,
-  // ensureCorrectUser,
+app.use('/api/users/:userId',
+  loginRequired,
+  ensureCorrectUser,
   serverRoutes
 );
-app.use(
-  // loginRequired, 
-  // ensureCorrectUser,
+app.use('/api/users/:userId',
+  loginRequired, 
+  ensureCorrectUser,
   channelRoutes
 );
-app.use(
-  // loginRequired, 
-  // ensureCorrectUser,
+app.use('/api/users/:userId',
+  loginRequired, 
   messageRoutes
 );
 
