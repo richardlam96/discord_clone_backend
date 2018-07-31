@@ -1,8 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+
+// Imports for real time.
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+
 const bodyParser = require('body-parser');
 const cors = require('cors');
+
 const { errorHandler } = require('./handlers/error');
 const { loginRequired, ensureCorrectUser } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
@@ -40,6 +46,20 @@ app.use(function(req, res, next) {
 
 app.use(errorHandler);
 
-app.listen(process.env.PORT || 3000, process.env.IP, function() {
+// Real time setup
+io.on('connection', socket => {
+	console.log('connected with io');
+
+	socket.on('send', msg => {
+		io.emit('send', msg);
+	});
+
+	socket.on('disconnect', () => {
+		console.log('disconnected');
+	});
+});
+
+
+http.listen(process.env.PORT || 3000, process.env.IP, function() {
 	console.log('Discord Clone started.');
 });

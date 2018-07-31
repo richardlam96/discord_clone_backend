@@ -36,14 +36,11 @@ exports.ensureCorrectUser = async function(req, res, next) {
 		const token = req.headers.authorization.split(' ')[1];
 		jwt.verify(token, process.env.SECRET_KEY, (err, payload) => {
 			if (payload) {
-        console.log('req.params', req);
-        console.log('payload', payload);
 				// Check that User's id is matching the one in requested route.
 				if (payload.id === req.params.userId) {
 					// Can also check database if the database has the matching owner.
 					next();
 				} else {
-          console.log(payload);
 					next({
 						status: 403,
 						// message: 'You do not have permissions to do that.',
