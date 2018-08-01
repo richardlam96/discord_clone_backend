@@ -47,12 +47,30 @@ app.use(function(req, res, next) {
 app.use(errorHandler);
 
 // Real time setup
-io.on('connection', socket => {
+// io
+// 	.of('/chat')
+// 	.on('connection', chatSocket => {
+// 		console.log('chat socket connected');
+// 		console.log(io.clients());
+// 
+// 		chatSocket.on('send', msg => {
+// 			console.log('/chat send event received');
+// 			chatSocket.emit('send', msg);
+// 		});
+// 	});
+
+
+io
+.of(/(\w+)\/(\w+)/)
+.on('connection', socket => {
 	console.log('connected with io');
 
 	socket.on('send', msg => {
-		console.log(msg);
-		io.emit('send', msg);
+		console.log('send event received');
+
+		let pathname = `/${msg.server}/${msg.channel}`;
+		io.of(pathname).emit('send', msg);
+		// io.emit('send', msg);
 	});
 
 	socket.on('disconnect', () => {
