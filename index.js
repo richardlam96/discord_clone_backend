@@ -61,16 +61,16 @@ app.use(errorHandler);
 
 
 io
-.of(/(\w+)\/(\w+)/)
+// .of(/(\w+)\/(\w+)/)
+.of('/chat')
 .on('connection', socket => {
 	console.log('connected with io');
 
 	socket.on('send', msg => {
-		console.log('send event received');
-
-		let pathname = `/${msg.server}/${msg.channel}`;
+		console.log('message received');
+		// let pathname = `/${msg.server}/${msg.channel}`;
+		let pathname = '/5b5637e5f7cdff08dc049259/5b5637e7f7cdff08dc04925a';
 		io.of(pathname).emit('send', msg);
-		// io.emit('send', msg);
 	});
 
 	socket.on('disconnect', () => {
