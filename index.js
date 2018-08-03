@@ -77,7 +77,7 @@ io
 
 	socket.on('send', msg => {
 		console.log('message received');
-		io.sockets.in(socket.room).emit('send', msg);
+		io.in(socket.room).emit('send', msg);
 		// io.to(socket.room).emit('send', msg);
 	});
 
