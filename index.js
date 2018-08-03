@@ -62,8 +62,6 @@ app.use(errorHandler);
 
 // .of(/(\w+)\/(\w+)/)
 io
-// .of(/(\w+)/)
-// .of('/chat')
 .on('connection', socket => {
 	console.log('connected with io');
 
@@ -74,9 +72,6 @@ io
 		socket.emit('change room', { 
 			ok: true,
 			room: socket.room,
-		});
-		io.sockets.in(newRoom).emit('user joined', {
-			message: 'a user joined!',
 		});
 	});
 
