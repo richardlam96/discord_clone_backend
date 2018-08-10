@@ -12,6 +12,7 @@ const cors = require('cors');
 const { errorHandler } = require('./handlers/error');
 const { loginRequired, ensureCorrectUser } = require('./middleware/auth');
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
 const serverRoutes = require('./routes/server');
 const channelRoutes = require('./routes/channel');
 const messageRoutes = require('./routes/message');
@@ -22,6 +23,9 @@ app.use(bodyParser.json());
 
 // Routes.
 app.use('/api/auth', authRoutes);
+app.use('/api/users', 
+	userRoutes
+);
 app.use('/api/users/:userId',
   loginRequired,
   ensureCorrectUser,
@@ -60,7 +64,6 @@ app.use(errorHandler);
 // 	});
 
 
-// .of(/(\w+)\/(\w+)/)
 io
 .on('connection', socket => {
 	console.log('connected with io');
@@ -78,7 +81,6 @@ io
 	socket.on('send', msg => {
 		console.log('message received');
 		io.in(socket.room).emit('send', msg);
-		// io.to(socket.room).emit('send', msg);
 	});
 
 	socket.on('disconnect', () => {
