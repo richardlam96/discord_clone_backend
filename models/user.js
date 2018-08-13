@@ -17,6 +17,10 @@ var userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Server',
   }],
+	friends: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+	}],
 });
 
 userSchema.pre('save', async function(next) {
