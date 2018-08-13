@@ -40,7 +40,7 @@ exports.indexFriends = async function(req, res, next) {
 
 		// Get the data of all friends.
 		let friendsDataPromises = user.friends.map(friendId => {
-			return db.User.findOne({ id: friendId });
+			return db.User.findById(friendId);
 		});
 
 		let friendsData = await Promise.all(friendsDataPromises);
@@ -90,6 +90,8 @@ exports.addFriend = async function(req, res, next) {
 		user.save();
 
 		return res.status(200).json({
+			friend,
+			friendId: friend._id,
 			message: 'Successfully added a friend!',
 		});
 	} catch(error) {

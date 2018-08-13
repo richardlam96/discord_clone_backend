@@ -14,7 +14,7 @@ exports.register = async function(req, res, next) {
    
     // Create new user.
 		let newUser = await db.User.create(req.body);
-		let { id, username, password } = newUser;
+		let { id, username, friends } = newUser;
 
     // Assign token to new user with available information.
 		let token = jwt.sign({
@@ -24,7 +24,7 @@ exports.register = async function(req, res, next) {
 		return res.status(200).json({
 			id,
 			username,
-			password,
+			friends,
 			token,
 		});
 	} catch(err) {
@@ -54,7 +54,7 @@ exports.signin = async function(req, res, next) {
 		// Check given password.
 		let isMatch = await user.comparePassword(req.body.password);
 		if (isMatch) {
-			let { id, username } = user;
+			let { id, username, friends } = user;
 			let token = jwt.sign({
 				id, 
 				username,
@@ -62,6 +62,7 @@ exports.signin = async function(req, res, next) {
 			return res.status(200).json({
 				id,
 				username,
+				friends,
 				token,
 			});
 		} else {

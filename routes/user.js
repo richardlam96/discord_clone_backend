@@ -3,6 +3,7 @@ const router = express.Router({ mergeParams: true });
 const { 
 	indexUsers,
 	indexFriends,
+	addFriend,
 } = require('../handlers/user');
 
 
