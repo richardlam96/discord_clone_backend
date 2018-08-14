@@ -24,6 +24,7 @@ app.use(bodyParser.json());
 // Routes.
 app.use('/api/auth', authRoutes);
 app.use('/api/users', 
+  loginRequired,
 	userRoutes
 );
 app.use('/api/users/:userId',

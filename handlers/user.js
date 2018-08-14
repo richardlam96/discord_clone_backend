@@ -26,6 +26,27 @@ exports.indexUsers = async function(req, res, next) {
 	}
 }
 
+exports.indexSingleUser = async function(req, res, next) {
+	try {
+		let user = db.User.findById(req.params.userId);
+		if (!user) {
+			next({
+				status: 400,
+				message: 'User was not found.',
+			});
+		}
+
+		return res.status(200).json({
+			user,
+		});
+	} catch(error) {
+		next({
+			status: 400,
+			message: error.message,
+		});
+	}
+}
+
 // FRIENDS *******************************************************************
 exports.indexFriends = async function(req, res, next) {
 	try {

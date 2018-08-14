@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const { 
 	indexUsers,
+	indexSingleUser,
 	indexFriends,
 	addFriend,
 } = require('../handlers/user');
@@ -9,6 +10,9 @@ const {
 
 router.route('/')
 	.get(indexUsers);
+
+router.route('/:userId')
+	.get(indexSingleUser);
 
 router.route('/:userId/friends')
 	.get(indexFriends);
