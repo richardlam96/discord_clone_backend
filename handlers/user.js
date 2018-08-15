@@ -28,7 +28,7 @@ exports.indexUsers = async function(req, res, next) {
 
 exports.indexSingleUser = async function(req, res, next) {
 	try {
-		let user = db.User.findById(req.params.userId);
+		let user = await db.User.findById(req.params.userId);
 		if (!user) {
 			next({
 				status: 400,
@@ -36,8 +36,9 @@ exports.indexSingleUser = async function(req, res, next) {
 			});
 		}
 
+		let { id, username, password, servers, friends } = user;
 		return res.status(200).json({
-			user,
+			id, username, password, servers, friends,
 		});
 	} catch(error) {
 		next({
