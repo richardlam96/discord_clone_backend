@@ -4,7 +4,8 @@ const {
 	indexUsers,
 	indexSingleUser,
 	indexFriends,
-	addFriend,
+  sendFriendRequest,
+  acceptFriendRequest,
 } = require('../handlers/user');
 
 
@@ -17,8 +18,11 @@ router.route('/:userId')
 router.route('/:userId/friends')
 	.get(indexFriends);
 
-router.route('/:userId/friends/:friendId')
-	.post(addFriend);
+router.route('/:userId/friends/:friendId/invite')
+	.post(sendFriendRequest);
+
+router.route('/:userId/friends/:friendId/accept')
+	.post(acceptFriendRequest);
 
 
 module.exports = router;

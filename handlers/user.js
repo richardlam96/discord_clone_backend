@@ -87,42 +87,57 @@ exports.indexFriends = async function(req, res, next) {
 	}
 }
 
-exports.addFriend = async function(req, res, next) {
-	try {
-		// Find User.
-		let user = await db.User.findById(req.params.userId);
-		if (!user) {
-			next({
-				status: 400,
-				message: 'User not found.',
-			});
-		}
+exports.sendFriendRequest = async function(req, res, next) {
+  try {
+    let user = await db.User.findById(req.params.userId);
+    let invitee = await db.User.findById(req.params.inviteeId);
 
-		// Find User to add as friend.
-		let friend = await db.User.findById(req.params.friendId);
-		if (!friend) {
-			next({
-				status: 400,
-				message: 'Friend not found.',
-			});
-		}
+    // Add invitee to user's outgoing requests.
+    user.outgoingRequests.push(invitee._id);
+    user.save();
 
-		// Add friend to User's friend list.
-		user.friends.push(friend._id);
-		user.save();
+    // Add user to invitee's incoming requests.
+    invitee.incomingRequests.push(user._id);
+    invitee.save();
 
-		return res.status(200).json({
-			friend,
-			friendId: friend._id,
-			message: 'Successfully added a friend!',
-		});
-	} catch(error) {
-		next({
-			status: 400,
-			message: error.message,
-		});
-	}
+    return res.status(200).json({
+      invitee: invitee._id,
+      message: 'Friend request sent',
+    });
+  } catch(error) {
+    next({
+      status: 400,
+      message: error.message,
+    });
+  }
+}
+
+exports.acceptFriendRequest = async function(req, res, next) {
+  try {
+    let user = await db.User.findById(req.params.userId);
+
+    // Remove friend id from incoming and move to friends.
+    let friendIndex = user.incomingRequests.indexOf(req.params.friendId);
+    let friend = user.incomingRequests.splice(friendIndex, 1);
+    user.friends.push(friend);
+    user.save();
+
+    return res.status(200).json({
+      friend,
+      message: 'Added a new friend',
+    });
+  } catch(error) {
+    next({
+      status: 400,
+      message: error.message,
+    });
+  }
 }
 
 
-		
+
+
+
+
+
+

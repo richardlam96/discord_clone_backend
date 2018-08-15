@@ -51,24 +51,23 @@ app.use(function(req, res, next) {
 
 app.use(errorHandler);
 
-// Real time setup
-// io
-// 	.of('/chat')
-// 	.on('connection', chatSocket => {
-// 		console.log('chat socket connected');
-// 		console.log(io.clients());
-// 
-// 		chatSocket.on('send', msg => {
-// 			console.log('/chat send event received');
-// 			chatSocket.emit('send', msg);
-// 		});
-// 	});
-
-
 io
 .on('connection', socket => {
 	console.log('connected with io');
 
+  // Socket for private rooom for direct messages and friend requests.
+  socket.on('join', data => {
+    socket.join(data.username);
+  });
+
+  // Socket for sending friend requests.
+  socket.on('invite', data => {
+    io.in(data.receiver).emit('invite', {
+      sender: data.sender,
+    });
+  });
+
+  // Socket for switching rooms to chat.
 	socket.on('change room', ({ newRoom }) => {
 		socket.leave(socket.room);
 		socket.join(newRoom);
@@ -79,8 +78,8 @@ io
 		});
 	});
 
+  // Socket for sending messages in a room.
 	socket.on('send', msg => {
-		console.log('message received');
 		io.in(socket.room).emit('send', msg);
 	});
 

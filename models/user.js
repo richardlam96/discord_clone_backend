@@ -21,6 +21,14 @@ var userSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
 	}],
+  incomingRequests: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
+  outgoingRequests: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
 });
 
 userSchema.pre('save', async function(next) {
