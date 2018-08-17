@@ -22,7 +22,6 @@ exports.register = async function(req, res, next) {
 			username,
 		}, process.env.SECRET_KEY);
 		return res.status(200).json({
-      id,
       ...newUser._doc,
     });
 	} catch(err) {
@@ -58,7 +57,6 @@ exports.signin = async function(req, res, next) {
 				username,
 			}, process.env.SECRET_KEY);
 			return res.status(200).json({
-        id,
         ...user._doc,
       });
 		} else {

@@ -38,7 +38,7 @@ exports.indexSingleUser = async function(req, res, next) {
 
 		let { id, username, password, servers, friends } = user;
 		return res.status(200).json({
-			id, username, password, servers, friends,
+      ...user._doc,
 		});
 	} catch(error) {
 		next({
