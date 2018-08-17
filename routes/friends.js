@@ -6,13 +6,13 @@ const {
   acceptFriendRequest,
 } = require('../handlers/friends');
 
-router.route('/:userId/friends')
+router.route('/')
 	.get(indexFriends);
 
-router.route('/:userId/friends/:friendId/invite')
+router.route('/invite')
 	.post(sendFriendRequest);
 
-router.route('/:userId/friends/:friendId/accept')
+router.route('/accept')
 	.post(acceptFriendRequest);
 
 

@@ -42,15 +42,19 @@ exports.indexFriends = async function(req, res, next) {
 exports.sendFriendRequest = async function(req, res, next) {
   try {
     let user = await db.User.findById(req.params.userId);
-    let invitee = await db.User.findById(req.params.inviteeId);
+    let invitee = await db.User.find({
+      username: req.body.inviteeUsername,
+    });
 
     // Add invitee to user's outgoing requests.
     user.outgoingRequests.push(invitee._id);
-    user.save();
 
     // Add user to invitee's incoming requests.
     invitee.incomingRequests.push(user._id);
-    invitee.save();
+
+    // Save changes.
+    await user.save();
+    await invitee.save();
 
     return res.status(200).json({
       invitee: invitee._id,
@@ -67,12 +71,24 @@ exports.sendFriendRequest = async function(req, res, next) {
 exports.acceptFriendRequest = async function(req, res, next) {
   try {
     let user = await db.User.findById(req.params.userId);
+    let friend = await db.User.find({
+      username: req.body.friendUsername,
+    });
 
     // Remove friend id from incoming and move to friends.
-    let friendIndex = user.incomingRequests.indexOf(req.params.friendId);
-    let friend = user.incomingRequests.splice(friendIndex, 1);
-    user.friends.push(friend);
-    user.save();
+    let friendIndex = user.incomingRequests.indexOf(friend._id);
+    let friendId = user.incomingRequests.splice(friendIndex, 1);
+    user.friends.push(friendId);
+
+    // Remove user's id from friend's outgoing.
+    let userIndex = friend.outgoingRequests.indexOf(friend._id);
+    let userId = friend.outgoingRequests.splice(userIndex, 1);
+    friend.friends.push(userId);
+
+    // Save changes.
+    await user.save();
+    await friend.save();
+
 
     return res.status(200).json({
       friend,
