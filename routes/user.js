@@ -3,9 +3,6 @@ const router = express.Router({ mergeParams: true });
 const { 
 	indexUsers,
 	indexSingleUser,
-	indexFriends,
-  sendFriendRequest,
-  acceptFriendRequest,
 } = require('../handlers/user');
 
 
@@ -14,16 +11,6 @@ router.route('/')
 
 router.route('/:userId')
 	.get(indexSingleUser);
-
-router.route('/:userId/friends')
-	.get(indexFriends);
-
-router.route('/:userId/friends/:friendId/invite')
-	.post(sendFriendRequest);
-
-router.route('/:userId/friends/:friendId/accept')
-	.post(acceptFriendRequest);
-
 
 module.exports = router;
 

@@ -16,6 +16,7 @@ const userRoutes = require('./routes/user');
 const serverRoutes = require('./routes/server');
 const channelRoutes = require('./routes/channel');
 const messageRoutes = require('./routes/message');
+const friendsRoutes = require('./routes/friends');
 
 
 app.use(cors());
@@ -23,24 +24,35 @@ app.use(bodyParser.json());
 
 // Routes.
 app.use('/api/auth', authRoutes);
+
 app.use('/api/users', 
   loginRequired,
 	userRoutes
 );
+
 app.use('/api/users/:userId',
   loginRequired,
   ensureCorrectUser,
   serverRoutes
 );
+
 app.use('/api/users/:userId',
   loginRequired, 
   ensureCorrectUser,
   channelRoutes
 );
+
 app.use('/api/users/:userId',
   loginRequired, 
   messageRoutes
 );
+
+app.use('/api/users/:userId/friends',
+  loginRequired,
+  ensureCorrectUser,
+  friendsRoutes
+);
+
 
 // Default error and error handler.
 app.use(function(req, res, next) {
