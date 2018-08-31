@@ -1,5 +1,5 @@
 # Get the official Node 8 runtime.
-FROM node:8
+FROM node:8.11.4
 
 # Working directory.
 WORKDIR /usr/src/app
