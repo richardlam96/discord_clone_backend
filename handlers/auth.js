@@ -21,9 +21,11 @@ exports.register = async function(req, res, next) {
       id,
 			username,
 		}, process.env.SECRET_KEY);
+
 		return res.status(200).json({
       ...newUser._doc,
     });
+
 	} catch(err) {
 		if (err.code === 11000) {
 			err.message = 'Sorry, username has been taken';
