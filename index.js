@@ -22,7 +22,6 @@ const friendsRoutes = require('./routes/friends');
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'build')));
 
 // Routes.
 app.use('/api/auth', authRoutes);
@@ -102,6 +101,8 @@ io
 	});
 });
 
+// Production.
+app.use(express.static(path.join(__dirname, 'build')));
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
