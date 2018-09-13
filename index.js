@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const app = express();
 
 // Imports for real time.
@@ -21,6 +22,7 @@ const friendsRoutes = require('./routes/friends');
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'build')));
 
 // Routes.
 app.use('/api/auth', authRoutes);
@@ -99,6 +101,11 @@ io
 		console.log('disconnected');
 	});
 });
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 
 
 http.listen(process.env.PORT, process.env.IP, function() {
