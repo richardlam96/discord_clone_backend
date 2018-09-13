@@ -102,10 +102,14 @@ io
 });
 
 // Production.
-app.use(express.static(path.join(__dirname, 'build')));
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+// app.use(express.static(path.join(__dirname, 'build')));
+// app.get('/', function (req, res) {
+//     res.sendFile(path.join(__dirname, 'build', 'index.html'));
+// });
+// app.get('/service-worker.js', function (req, res) {
+//     res.sendFile(path.join(__dirname, '..', 'build', 'service-worker.js'));
+// });
+
 
 
 
