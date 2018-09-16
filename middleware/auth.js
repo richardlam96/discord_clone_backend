@@ -43,8 +43,8 @@ exports.ensureCorrectUser = async function(req, res, next) {
 				} else {
 					next({
 						status: 403,
-						message: 'You do not have permissions to do that.',
-						// message: `params id: ${req.params.userId}, payload id: ${payload.id}`,
+						// message: 'You do not have permissions to do that.',
+						message: `params id: ${req.params.userId}, payload id: ${payload.id}`,
 					});
 				}
 			} else {

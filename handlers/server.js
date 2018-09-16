@@ -138,7 +138,7 @@ exports.deleteServer = async function(req, res, next) {
    
 		// Remove Server from Users.
     let removedServerIndex = user.servers.indexOf(removedServer._id);
-    user.servers.splice(removedServerIndex, 1);
+    user.servers = user.servers.splice(removedServerIndex, 1);
     await user.save();
 
     // Return information of removed Server.

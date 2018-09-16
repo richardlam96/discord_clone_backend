@@ -3,6 +3,17 @@ const db = require('../models');
 
 exports.createMessage = async function(req, res, next) {
 	try {
+    // Fine User for username.
+    let user = await db.User.findOne({
+      _id: req.params.userId,
+    });
+    if (!user) {
+      next({
+        status: 400,
+        message: 'Could not find user',
+      });
+    }
+
 		// Find channel.
 		let targetChannel = await db.Channel.findOne({
 			_id: req.params.channelId,
@@ -17,7 +28,7 @@ exports.createMessage = async function(req, res, next) {
 		// Create message.
 		let message = await db.Message.create({
 			text: req.body.text,
-			user: req.params.userId,
+			user: user.username,
 			channel: targetChannel._id,
 			server: req.params.serverId,
 		});
