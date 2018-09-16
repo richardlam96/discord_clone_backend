@@ -48,7 +48,7 @@ app.use('/api/users/:userId',
   messageRoutes
 );
 
-app.use('/api/users/:userId/friends',
+app.use('/api/users/:userId/friends/',
   loginRequired,
   ensureCorrectUser,
   friendsRoutes

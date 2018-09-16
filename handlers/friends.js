@@ -12,20 +12,39 @@ exports.indexFriends = async function(req, res, next) {
 			});
 		}
 
-		// Get the data of all friends.
-		let friendsDataPromises = user.friends.map(friendId => {
+		// Normalized format for user's friends and all requests.
+    let allFriends = user.friends.concat(
+      user.incomingRequests,
+      user.outgoingRequests
+    );
+		let friendsDataPromises = allFriends.map(friendId => {
 			return db.User.findById(friendId);
 		});
-
 		let friendsData = await Promise.all(friendsDataPromises);
 
-		// Return a normalized format.
 		let friendIds = [];
 		let friendsById = friendsData.reduce((acc, friend) => {
 			friendIds.push(friend._id);
-			acc[friend._id] = friend;
+			acc[friend._id] = {
+        _id: friend.id,
+        username: friend.username,
+      };
 			return acc;
 		}, {});
+
+    // // Normalized format for user's incoming requests.
+    // let incomingRequestPromises = user.incomingRequests.map(id => {
+    //   return db.User.findById(id);
+    // });
+    // let incomingRequests = await Promise.all(incomingRequestPromises);
+
+    // let incomingRequestIds = [];
+    // let incomingRequestsById = incomingRequests.reduce((acc, user) => {
+    //   incomingRequestIds.push(user._id);
+    //   acc[user._id] = user;
+    //   return acc;
+    // }, {});
+    // // Normalized format for user's outgoing requests.
 
 		return res.status(200).json({
 			friendsById,
@@ -42,9 +61,15 @@ exports.indexFriends = async function(req, res, next) {
 exports.sendFriendRequest = async function(req, res, next) {
   try {
     let user = await db.User.findById(req.params.userId);
-    let invitee = await db.User.find({
+    let invitee = await db.User.findOne({
       username: req.body.inviteeUsername,
     });
+    if (!invitee) {
+      next({
+        status: 400,
+        message: 'Could not find that username',
+      });
+    }
 
     // Add invitee to user's outgoing requests.
     user.outgoingRequests.push(invitee._id);
@@ -57,9 +82,11 @@ exports.sendFriendRequest = async function(req, res, next) {
     await invitee.save();
 
     return res.status(200).json({
-      invitee: invitee._id,
+      _id: invitee._id,
+      username: invitee.username,
       message: 'Friend request sent',
     });
+
   } catch(error) {
     next({
       status: 400,
